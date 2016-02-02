@@ -26,35 +26,38 @@ require('./utils/selenium').then(() => {
 
 		return hash(bots);
 	}
-
-	createBots()
-		.then((bots) => {
-			var adapters = [];
-			config.adapters
-				.filter(metadata => metadata.enabled)
-				.forEach((metadata) => {
-					metadata.pages.forEach((i) => {
-						var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
-							slackBot: bots[metadata.slackBot],
-							page: i + 1,
-							client: client,
-							proxy: allProxies[metadata.proxy || 0] || null
-						}));
-						adapters.push(adapter);
+	try {
+		createBots()
+			.then((bots) => {
+				var adapters = [];
+				config.adapters
+					.filter(metadata => metadata.enabled)
+					.forEach((metadata) => {
+						metadata.pages.forEach((i) => {
+							var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
+								slackBot: bots[metadata.slackBot],
+								page: i + 1,
+								client: client,
+								proxy: allProxies[metadata.proxy || 0] || null
+							}));
+							adapters.push(adapter);
+						});
 					});
-				});
 
-			if (adapters.length) {
-				runAdapter(0);	
-			}
-			
-			function runAdapter(adapterIndex){
-				adapters[adapterIndex]
-					.run()
-					.then(() => {
-						var nextAdapterIndex = (adapterIndex + 1) % adapters.length
-						setTimeout(runAdapter.bind(null, nextAdapterIndex), config.interval);
-					});
-			}
-		});
+				if (adapters.length) {
+					runAdapter(0);	
+				}
+				
+				function runAdapter(adapterIndex){
+					adapters[adapterIndex]
+						.run()
+						.then(() => {
+							var nextAdapterIndex = (adapterIndex + 1) % adapters.length
+							setTimeout(runAdapter.bind(null, nextAdapterIndex), config.interval);
+						});
+				}
+			});
+	} catch (e) {
+		winston.info(`Error: ${e.message}`);
+	}
 });
