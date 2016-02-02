@@ -27,6 +27,10 @@ module.exports = class BaseAdapter {
 		this.errorsRef = new Firebase(options.errorsUrl);
 	}
 
+	useWebdriver(){
+		return false;
+	}
+
 	visibleSelector(){
 		return null;
 	}
@@ -39,45 +43,67 @@ module.exports = class BaseAdapter {
 		winston.info(`Adapter::${this.id}: getting document`);
 		return new Promise((resolve) => {
 			var html;
-			var clientPromise = this.client.init();
-			if (this.proxy) {
-				clientPromise = this.proxy(this.url, clientPromise);
+			if (this.useWebdriver()) {
+				var clientPromise = this.client.init();
+				if (this.proxy) {
+					clientPromise = this.proxy(this.url, clientPromise);
+				} else {
+					clientPromise = clientPromise.url(this.url);
+				}
+				clientPromise
+					.waitForExist(this.visibleSelector(), 60000)
+					.then(() => winston.info(`Adapter::${this.id} : inside ${this.url}`))
+					.getHTML('body', (err, bodyHtml) => {
+						winston.info(`Adapter::${this.id} : Got HTML`)
+						html = bodyHtml;
+					})
+					.end(() => {
+						resolve(cheerio.load(html));
+					});	
 			} else {
-				clientPromise = clientPromise.url(this.url);
-			}
-			clientPromise
-				.waitForExist(this.visibleSelector(), 60000)
-				.then(() => winston.info(`Adapter::${this.id} : inside ${this.url}`))
-				.getHTML('body', (err, bodyHtml) => {
-					winston.info(`Adapter::${this.id} : Got HTML`)
-					html = bodyHtml;
-				})
-				.end(() => {
-					resolve(cheerio.load(html));
+				request(this.url, function(error, response, body) {
+					if (!error && response.statusCode == 200) {
+						resolve(cheerio.load(body)) // Show the HTML for the Google homepage. 
+					} else {
+						resolve(cheerio.load('<div></div>'));
+					}
 				});
+			}
+			
 
 		}).then(($) => {
 			return new Promise((resolve) => {
 				var html;
 				if (this.additionalUrl) {
-					var clientPromise = this.client.init();
-					if (this.proxy) {
-						clientPromise = this.proxy(this.url, clientPromise);
+					if (this.useWebdriver()) {
+						var clientPromise = this.client.init();
+						if (this.proxy) {
+							clientPromise = this.proxy(this.url, clientPromise);
+						} else {
+							clientPromise = clientPromise.url(this.url);
+						}
+						clientPromise
+							.waitForExist(this.visibleSelector(), 60000)
+							.then(() => winston.info(`Adapter::${this.id} : inside ${this.additionalUrl}`))
+							.getHTML('body', (err, bodyHtml) => {
+								html = bodyHtml;
+							})
+							.end(() => {
+								resolve({
+									$: $,
+									$$: cheerio.load(html)
+								});
+							});	
 					} else {
-						clientPromise = clientPromise.url(this.url);
-					}
-					clientPromise
-						.waitForExist(this.visibleSelector(), 60000)
-						.then(() => winston.info(`Adapter::${this.id} : inside ${this.additionalUrl}`))
-						.getHTML('body', (err, bodyHtml) => {
-							html = bodyHtml;
-						})
-						.end(() => {
-							resolve({
-								$: $,
-								$$: cheerio.load(html)
-							});
+						request(this.url, function(error, response, body) {
+							if (!error && response.statusCode == 200) {
+								resolve(cheerio.load(body)) // Show the HTML for the Google homepage. 
+							} else {
+								resolve(cheerio.load('<div></div>'));
+							}
 						});
+					}
+					
 				} else {
 					resolve({
 						$: $

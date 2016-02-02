@@ -6,6 +6,10 @@ module.exports = class Yad2Adapter extends BaseAdapter {
 		return '#menu_strip';	
 	}
 
+	useWebdriver(){
+		return true;
+	}
+
 	getItems(documents){
 		var $ = documents.$;
 		var $$ = documents.$$;
