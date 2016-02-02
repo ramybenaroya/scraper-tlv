@@ -17,9 +17,9 @@ module.exports = {
 			id: 'going_out_tlv',
 			adapter: 'goingOutTLV',
 			url: 'http://www.goingout.co.il/city/tel-aviv',
-			slackChannel: 'recenttest',
+			slackChannel: 'recent',
 			slackBot: 'tlv-bot',
-			itemsUrl: 'https://going-out-tlv.firebaseio.com/channels/recenttest',
+			itemsUrl: 'https://going-out-tlv.firebaseio.com/channels/recent',
 			pages: 3,
 			enabled: true
 		}
