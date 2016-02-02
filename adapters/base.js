@@ -139,7 +139,7 @@ module.exports = class BaseAdapter {
 						return !itemsHash[item.id]
 					});
 				winston.info(`Adapter::${this.id} New Items: ${JSON.stringify(newItems, null, '\t')}`);
-				resolve(newItems);
+				resolve((newItems || []).reverse());
 			}, reject);
 		});
 	}
