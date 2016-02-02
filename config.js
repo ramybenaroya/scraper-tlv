@@ -16,7 +16,7 @@ module.exports = {
 		{
 			id: 'going_out_tlv',
 			adapter: 'goingOutTLV',
-			url: 'http://www.goingout.co.il/city/tel-aviv',
+			url: 'http://www.goingout.co.il/search_results.php?city=1&type=0',
 			slackChannel: 'recent',
 			slackBot: 'tlv-bot',
 			itemsUrl: 'https://going-out-tlv.firebaseio.com/channels/recent',
@@ -37,5 +37,5 @@ module.exports = {
 	adaptersCommon: {
 		errorsUrl: 'https://shiramy-scraper.firebaseio.com/errors',
 	},
-	interval: 300000, //10 mins,
+	interval: 300000, //5 mins,
 }

@@ -52,7 +52,7 @@ ${$.html()}`);
 	}
 
 	getPageUrl(i) {
-		return `${this.url}&p=${i+1}`;
+		return `${this.url}&p=${i}`;
 	}
 
 	formatItem(item, i) {

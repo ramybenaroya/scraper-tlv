@@ -33,15 +33,18 @@ require('./utils/selenium').then(() => {
 				config.adapters
 					.filter(metadata => metadata.enabled)
 					.forEach((metadata) => {
-						metadata.pages.forEach((i) => {
-							var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
-								slackBot: bots[metadata.slackBot],
-								page: i + 1,
-								client: client,
-								proxy: allProxies[metadata.proxy || 0] || null
-							}));
-							adapters.push(adapter);
-						});
+						metadata.pages
+							.map(i => i)
+							.reverse()
+							.forEach((i) => {
+								var adapter = new allAdapters[metadata.adapter](Object.assign({}, (config.adaptersCommon || {}), metadata, {
+									slackBot: bots[metadata.slackBot],
+									page: i + 1,
+									client: client,
+									proxy: allProxies[metadata.proxy || 0] || null
+								}));
+								adapters.push(adapter);
+							});
 					});
 
 				if (adapters.length) {

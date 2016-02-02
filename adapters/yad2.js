@@ -47,6 +47,6 @@ ${$.html()}`);
 	}
 
 	getPageUrl(i) {
-		return `${this.url}&Page=${i+1}`;
+		return `${this.url}&Page=${i}`;
 	}
 }
