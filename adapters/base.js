@@ -137,6 +137,7 @@ module.exports = class BaseAdapter {
 	}
 
 	filterNewItems(items){
+		winston.info(`Adapter::${this.id} Items Found: ${JSON.stringify(items, null, '\t')}`);
 		return new Promise((resolve, reject) => {
 			this.firebaseRef.on('value', (snapshot) => {
 				var itemsHash = snapshot.val() || {};

@@ -10,7 +10,7 @@ module.exports = class GoingOutTLVAdapter extends BaseAdapter {
 	getItems(documents){
 		var $ = documents.$;
 
-		var items = $('#page_content_container tr[itemscope]')
+		var items = $('.results tr[itemscope]')
 			.toArray()
 			.map(tr => {
 				var $tr = $(tr);
