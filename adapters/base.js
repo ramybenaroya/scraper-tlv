@@ -97,9 +97,15 @@ module.exports = class BaseAdapter {
 					} else {
 						request(this.url, function(error, response, body) {
 							if (!error && response.statusCode == 200) {
-								resolve(cheerio.load(body)) // Show the HTML for the Google homepage. 
+								resolve({
+									$: $,
+									$$: cheerio.load(body)
+								});
 							} else {
-								resolve(cheerio.load('<div></div>'));
+								resolve({
+									$: $,
+									$$: cheerio.load('<div></div>')
+								});
 							}
 						});
 					}
