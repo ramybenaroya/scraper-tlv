@@ -15,7 +15,6 @@ module.exports = class GoingOutTLVAdapter extends BaseAdapter {
 			.map(tr => {
 				var $tr = $(tr);
 				var $a0 = $tr.find('> td').eq(0).find('a');
-				var id = md5($a0.attr('href'));
 				var $td1 = $tr.find('> td').eq(1);
 				var title = $td1.find('.result_event_title').text();
 				var desc = $td1.find('> span').text();
@@ -29,8 +28,7 @@ module.exports = class GoingOutTLVAdapter extends BaseAdapter {
 				var price = $td4.find('b').text();
 				var ticketsUrl = $td4.find('a').attr('href');
 				var ticketsUrl = ticketsUrl ? `http://goingout.co.il${ticketsUrl}` : '';
-				return {
-					id: id,
+				var itemData = {
 					text: (
 `${title.trim()}
 ${desc.trim()}
@@ -41,6 +39,11 @@ ${location.trim()}`),
 					url: `http://goingout.co.il${$a0.attr('href')}`,
 					img: `http://goingout.co.il${$a0.find('img').attr('src')}`
 				}
+				
+				var id = md5(JSON.stringify(itemData));
+				itemData.id = id;
+
+				return itemData;
 			});
 		if (items.length === 0) {
 			this.writeError(`${this.toString()}: No items were found in Page
@@ -60,8 +63,8 @@ ${$.html()}`);
 `===================
 ${item.img}
 ${item.text}
-${item.url}
-${item.ticketsUrl}
+<${item.url}|View Event>
+<${item.ticketsUrl}|Buy Tickets>
 `.trim())
 	}
 }

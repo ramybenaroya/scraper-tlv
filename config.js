@@ -20,7 +20,7 @@ module.exports = {
 			slackChannel: 'recent',
 			slackBot: 'tlv-bot',
 			itemsUrl: 'https://going-out-tlv.firebaseio.com/channels/recent',
-			pages: 3,
+			pages: 1,
 			enabled: true
 		}
 	],

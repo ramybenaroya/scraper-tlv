@@ -59,6 +59,9 @@ require('./utils/selenium').then(() => {
 							setTimeout(runAdapter.bind(null, nextAdapterIndex), config.interval);
 						});
 				}
+			}).
+			catch((e) => {
+				throw e;
 			});
 	} catch (e) {
 		winston.info(`Error: ${e.message}`);
