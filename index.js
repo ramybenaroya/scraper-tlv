@@ -9,7 +9,17 @@ var winston = require('winston');
 var client = require('./utils/client');
 var http = require('http');
 if (process.env.PORT) {
-	http.createServer(() => {}).listen(process.env.PORT);	
+	http.createServer((req, res) => {
+		res.writeHead(200, {
+			'Content-Type': 'text/plain'
+		});
+		res.end('ok');
+	}).listen(process.env.PORT);
+	setTimeout(() => {
+		setInterval(function() {
+			http.get(`http://${config.herokuAppName}.herokuapp.com`);
+		}, config.keepAliveInterval);	
+	},1000);
 }
 require('./utils/selenium').then(() => {
 	function createBots(){

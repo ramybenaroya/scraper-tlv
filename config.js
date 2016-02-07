@@ -38,4 +38,6 @@ module.exports = {
 		errorsUrl: 'https://shiramy-scraper.firebaseio.com/errors',
 	},
 	interval: 300000, //5 mins,
+	"herokuAppName": "still-forest-92642",
+	keepAliveInterval: 300000 // 5 mins
 }
